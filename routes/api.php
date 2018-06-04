@@ -13,7 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post(
-    '/module_reminder_assigner/{email}',
-    'ApiController@moduleReminders'
-)->name('module_reminder');
+Route::group([
+    'middleware' => ['custom.response']
+], function () {
+    Route::post(
+        '/module_reminder_assigner/{email}',
+        'ApiController@moduleReminders'
+    )->name('module_reminder');
+});

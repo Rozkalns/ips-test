@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\InfusionsoftHelper;
+use App\Http\Responses\ApiResponse;
 use App\Module;
 use App\User;
 use Exception;
@@ -21,11 +22,13 @@ class ApiController extends Controller
             $user->tags = $api_user['Groups'] ?? null; // Added tags
             $user->products = $api_user['_Products'] ?? null; // Purchased courses
         } else {
-            return Response::json(null, 404); // user not found
+            return ApiResponse::create(null, ApiResponse::STATUS_NOT_FOUND)
+                ->setError('User not found');
         }
 
         if (!$user->products) {
-            return Response::json(null, 403); // User does not have any purchased courses
+            return ApiResponse::create(null, ApiResponse::STATUS_BAD_REQUEST)
+                ->setError('User does not have any purchased courses');
         }
 
         $user->products = collect(explode(',', $user->products));
@@ -36,7 +39,7 @@ class ApiController extends Controller
 
         // If all competed, add "Module reminders completed"
 
-        return Response::json(null, 201);
+        return ApiResponse::create('success', ApiResponse::STATUS_CREATED);
     }
 
     public function exampleCustomer()
