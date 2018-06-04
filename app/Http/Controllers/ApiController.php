@@ -3,14 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\InfusionsoftHelper;
+use App\Module;
+use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Response;
 
 class ApiController extends Controller
 {
-    // Todo: Module reminder assigner
+    public function moduleReminders($email)
+    {
+        $user = User::where(compact('email'))->with('completedModules')->first();
 
-    private function exampleCustomer()
+        $infusionsoft = new InfusionsoftHelper();
+
+        if ($user && $api_user = $infusionsoft->getContact($email)) {
+            $user->tags = $api_user['Groups'] ?? null; // Added tags
+            $user->products = $api_user['_Products'] ?? null; // Purchased courses
+        } else {
+            return Response::json(null, 404); // user not found
+        }
+
+        if (!$user->products) {
+            return Response::json(null, 403); // User does not have any purchased courses
+        }
+
+        $user->products = collect(explode(',', $user->products));
+
+        // If there are no completed modules, add first
+
+        // If any started, add next
+
+        // If all competed, add "Module reminders completed"
+
+        return Response::json(null, 201);
+    }
+
+    public function exampleCustomer()
     {
         $infusionsoft = new InfusionsoftHelper();
 
