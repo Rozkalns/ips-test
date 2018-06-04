@@ -10,8 +10,8 @@ class ApiController extends Controller
 {
     // Todo: Module reminder assigner
 
-    private function exampleCustomer(){
-
+    private function exampleCustomer()
+    {
         $infusionsoft = new InfusionsoftHelper();
 
         $uniqid = uniqid();
@@ -28,9 +28,8 @@ class ApiController extends Controller
         ]);
 
         // attach IPA M1-3 & M5
-        $user->completed_modules()->attach(Module::where('course_key', 'ipa')->limit(3)->get());
-        $user->completed_modules()->attach(Module::where('name', 'IPA Module 5')->first());
-
+        $user->completedModules()->attach(Module::where('course_key', 'ipa')->limit(3)->get());
+        $user->completedModules()->attach(Module::where('name', 'IPA Module 5')->first());
 
         return $user;
     }
